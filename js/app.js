@@ -34,19 +34,25 @@ let numberOfMoves = 0;
 let numberOfMatches = 0;
 let deck = document.querySelector('.deck');
 let startTime = Date.now();
-let time = document.querySelector('timer')
+let time = document.querySelector('timer');
 //Begins timer
 function startTimer(time) {
 	setInterval(function() {
 		var timeChange = Date.now() - startTime;
+		if(numberOfMatches==8){
+			return;
+		}
 		timer.innerText = (Math.floor(timeChange / 1000) + " seconds");
 	}, 1000)
 }
 
+
 function startGame() {
 	//begins game by shuffling cards
+	openCards=[];
 	numberOfMoves = 0;
 	numberOfMatches = 0;
+	Enable=true;
 	let zeroMoves = document.querySelector('.moves');
 	zeroMoves.textContent = 0;
 	startTime = Date.now();
@@ -57,8 +63,20 @@ function startGame() {
 		card.classList.remove('match');
 		deck.appendChild(card);
 	}
+	document.querySelector('.stars').innerHTML="";
+	const newStars = document.querySelector('.stars');
+	let createStars = document.createElement('LI');
+	for(i=1; i<=3; i++){
+	let createStar = document.createElement('LI');
+	createStar.appendChild(document.createTextNode(""));
+	createStar.setAttribute("class", "fa fa-star");
+	newStars.appendChild(createStar);
+	startTimer();
+	}
+
 }
-startTimer();
+
+
 /*
  * set up the event listener for a card. If a card is clicked:
  *  - display the card's symbol (put this functionality in another function that you call from this one)
@@ -139,7 +157,7 @@ function starRating(numberOfMoves) {
 		stars.removeChild(stars.childNodes[1]);
 	}
 	if (numberOfMoves == 20) {
-		stars.removeChild(stars.childNodes[2]);
+		stars.removeChild(stars.childNodes[1]);
 	}
 }
 //********************Modal**************************************
@@ -150,7 +168,6 @@ var modal = document.getElementById("myModal");
 var modalContent = document.getElementsByClassName('modal-content')[0];
 // Get the <span> element that closes the modal
 var span = document.getElementsByClassName("close")[0];
-//Get the number of winning stars
 // When the user clicks on <span> (x), close the modal
 span.onclick = function() {
 	modal.style.display = "none";
@@ -167,7 +184,9 @@ function winGame(starRating, totalTime) {
 	var winningStars = document.querySelectorAll('.fa-star');
 	var div = winningStars.length;
 	var winningTime = document.getElementById('timer');
-	var winTime = winningTime.innerText;
+	var winTime = winningTime.textContent;
 	modalContent.textContent = "Congratulations you won! It took you " + winTime + " and you received " + div + " stars! If you would like to play again please click the restart button.";
 	modal.style.display = "block";
 }
+
+window.onload = startGame;
